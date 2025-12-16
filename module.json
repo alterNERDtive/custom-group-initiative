@@ -1,0 +1,60 @@
+{
+  "id": "custom-group-initiative",
+  "title": "Custom Group Initiative",
+  "description": "This module allows grouping combatants by custom rules, or disabling grouping entirely.",
+  "version": "20251216",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.351",
+    "maximum": "13.999"
+  },
+  "esmodules": [
+    "scripts/libwrapper-shim/shim.js",
+    "scripts/setup.mjs"
+  ],
+  "relationships": {
+    "recommends": [
+      {
+        "id": "lib-wrapper",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.13.0.0",
+          "verified": "1.13.4.0"
+        }
+      }
+    ]
+  },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
+  "flags": {
+    "hotReload": {
+      "extensions": [
+        "json"
+      ],
+      "paths": [
+        "lang"
+      ]
+    }
+  },
+  "url": "https://github.com/alterNERDtive/custom-group-initiative",
+  "bugs": "https://github.com/alterNERDtive/custom-group-initiative/issues/",
+  "changelog": "https://github.com/alterNERDtive/custom-group-initiative/releases/latest/",
+  "download": "https://github.com/alterNERDtive/custom-group-initiative/archive/refs/heads/main.zip",
+  "manifest": "https://github.com/alterNERDtive/custom-group-initiative/raw/refs/heads/main/module.json",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "authors": [
+    {
+      "name": "alterNERDtive",
+      "discord": "alternerdtive",
+      "url": "https://alternerd.tv",
+      "flags": {}
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "custom-group-initiative",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterNERDtive/custom-group-initiative.git"
+  },
+  "keywords": [
+    "fvtt",
+    "module"
+  ],
+  "author": "alterNERDtive",
+  "bugs": {
+    "url": "https://github.com/alterNERDtive/custom-group-initiative"
+  },
+  "homepage": "https://github.com/alterNERDtive/custom-group-initiative",
+  "devDependencies": {
+    "rollup": "^4.22.4"
+  }
+}
