@@ -37,16 +37,5 @@ export class ModuleSettings {
       requiresReload: true,
       onChange: false
     });
-
-    game.settings.register(MODULE, "roundInitiative", {
-      name: "CUSTOMGROUPINITIATIVE.RoundInitiativeSettingName",
-      hint: "CUSTOMGROUPINITIATIVE.RoundInitiativeSettingHint",
-      scope: "world",
-      config: true,
-      type: Boolean,
-      default: true,
-      requiresReload: false,
-      onChange: false
-    });
   }
 }
