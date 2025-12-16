@@ -33,40 +33,44 @@ export class GroupInitiative {
             }
         }
         else if (game.settings.get(MODULE, "groupMode") === "actor") {
-            Hooks.on("combatStart", GroupInitiative._combatStart);
-        }
-    }
-        
-    static _combatStart(combat) {
-        if (!game.user.isGM) { return; }
-
-        let updates = new Array();
-        for (let [id, combatants] of Object.entries(Object.groupBy(combat.combatants, ( element, index ) => element.actorId))) {
-            if (combatants.length > 1) {
-                let initiative = 0;
-                combatants.forEach((combatant) => {
-                    initiative += Math.floor(combatant.initiative);
-                });
-                initiative /= combatants.length;
-                if (game.settings.get(MODULE, "roundInitiative")) {
-                    if (game.system.id === "dnd5e") {
-                        initiative = Math.floor(initiative);
-                    } else {
-                        initiative = Math.round(initiative)
-                    }
-                }
-                if (game.system.id === "dnd5e" && game.settings.get("dnd5e", "initiativeDexTiebreaker")) {
-                    initiative += game.actors.get(id).system.abilities.dex.value / 100;
-                }
-                updates[id] = initiative;
-            }
-        }
-        if (updates) {
-            combat.combatants.forEach((combatant) => {
-                if (combatant.actorId in updates) {
-                    combatant.update({ initiative: updates[combatant.actorId] });
+            const semaphore = new foundry.utils.Semaphore(1);
+            Hooks.on("createCombatant", (document, options, userId) => {
+                if (game.user.isActiveGM) {
+                    semaphore.add(GroupInitiative.groupCombatant, document);
                 }
             });
         }
+    }
+
+    static groupCombatant(combatant) {
+        return new Promise(async resolve => {
+            if (combatant.group || combatant.token?.actorLink || !combatant.token?.baseActor) {
+                resolve(false);
+            }
+            else {
+                const key = `${combatant.token.disposition}:${combatant.token.baseActor.id}`;
+                const combat = combatant.combat;
+                // check if a group already exists
+                const group = combat.groups.find(g => g.getFlag("custom-group-initiative", "key") === key);
+                if (group) {
+                    resolve(combatant.update({group: group.id}));
+                } else {
+                    // see if there's another combatant to group with
+                    const otherCombatant = combat.combatants.find(c => `${c.token.disposition}:${c.token.baseActor.id}` === key && c.id !== combatant.id);
+                    if (otherCombatant) {
+                        // create a new group then add the two combatants to it
+                        const [group] = await combat.createEmbeddedDocuments("CombatantGroup", [{"flags.custom-group-initiative.key": key}]);
+                        resolve(
+                            combat.updateEmbeddedDocuments("Combatant", [
+                                {_id: combatant.id, group: group.id},
+                                {_id: otherCombatant.id, group: group.id}
+                            ])
+                        );
+                    } else {
+                        resolve(false);
+                    }
+                }
+            }
+        });
     }
 }
